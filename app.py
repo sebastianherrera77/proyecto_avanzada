@@ -312,7 +312,15 @@ elif opcion == "GRÁFICAS":
         
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
-        st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
+        st.write(""" Un método muy práctico para saber si un distrito es saludable o no es ver como ha ido 
+            evolucionando a lo largo de los años que se estudió. No podemos predecir al 100% si a futuro 
+            ese distrito mejorará muchisimo o empereorá pero si nos dan una idea al analizar como fue la 
+            cantidad de recursos en esos 4 años de estudio. Por esto al analizar distrito por distrito notamos que
+            distritos limeños, en especifico los de la provincia de Lima mayormente tienden a aumentar 
+            la cantidad de residuos en la mayoria de tipos de residuos. Por el contrario hay distritos un poco 
+            más alejados que tienden a hacer todo lo contrario, reducen la producción de residuos. Esto podemos usarlo
+            a futuro para empezar a predecir con mas precisión si tendrán evolución positiva o negativa.
+            """)
     
     elif tipo_grafica == "Gráfica 4":
         st.header("🏆 DISTRITOS MÁS LIMPIOS (MENOR RESIDUO PER CÁPITA)")
@@ -350,7 +358,14 @@ elif opcion == "GRÁFICAS":
         
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
-        st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
+        st.write("""Por ultimo quisimos poner un apartado cuyo propósito sea el de mencionar aquellos
+            distritos más limpios, es decir con menos cantidad de residuos expulsados en un año especifico.
+            Esta idea surgio con el fin de buscar distritos que puedan ofrecer mejor calidad de vida. Es notorio 
+            que distritos urbanizados como los de Lima metropolitana tiendan a ser muy contaminados y estos
+            traigan problemas a la salud a los habitantes. El estado a su vez podria usar esta gráfica para seguir
+            conservando estos distritos y seguir mejorandolos. Esta grafica demuestra que la centralización y urbanización
+            lo que hizo fue traer consigo más residuos que buscan, en su mayoria, contaminar las ciudades.
+            """)
 
 elif opcion == "NOSOTROS":
     st.title("👥 SOBRE NOSOTROS")
@@ -386,9 +401,14 @@ elif opcion == "NOSOTROS":
     st.markdown("""
     ### 📝 Sobre el Proyecto
     
-    Este dashboard fue desarrollado como parte de un proyecto de análisis de residuos sólidos,
-    con el objetivo de proporcionar información clara y visual sobre la gestión de residuos
-    en diferentes regiones del país.
+    Este  proyecto lo que buscó fue el presentar datos por distrito o departamento sobre residuos
+    en especifico, su evolución con respecto al tiempo y la comparativa abrumaente entre ellos.
+    Queremos a su vez generar una concientización para que veamos que Lima es un distrito absurdamente
+    contaminado por la gran cantidad de residuos. También que el estado vea que que hay distritos que necesitan 
+    acción inmediata para mejorar la calidad de vida. Adicional a generar una concientización al estado
+    queremos que también los propios ciudadanos vean la cantidad de recursos desperdiciados y que esto solo 
+    perjudicará la salud de nosotros mismos. Cada gráfica muestra un distinto aspecto a analizar y espero sea entendible
+    por uno y cada uno de ustedes, espero pudieran entender el proyecto elaborado
     
     **Tecnologías utilizadas:**
     - Python 3.x
@@ -400,3 +420,4 @@ elif opcion == "NOSOTROS":
 
 st.sidebar.markdown("---")
 st.sidebar.info("VIVA EL PERU, VIVA EGINHARDO, VIVA EL FORNAIT, VIVA EL ROBLOX")
+st.image("perrito.png", use_container_width=True)
