@@ -4,11 +4,19 @@ import altair as alt
 import matplotlib.pyplot as plt
 import warnings
 import base64
+import streamlit as st
 
-# Suprimir warnings de deprecación
+hide_original_button = """
+<style>
+[data-testid="stSidebarCollapseButton"] {
+    display: none !important;
+}
+</style>
+"""
+st.markdown(hide_original_button, unsafe_allow_html=True)
+
 warnings.filterwarnings('ignore', category=DeprecationWarning)
 
-# Función para cargar imagen de fondo
 def get_base64_image(image_path):
     try:
         with open(image_path, "rb") as img_file:
@@ -16,15 +24,23 @@ def get_base64_image(image_path):
     except:
         return None
 
-# Configurar el fondo y estilos
 def set_background_and_style(image_path):
     base64_img = get_base64_image(image_path)
     
     if base64_img:
-        # Con imagen de fondo
         page_bg = f"""
         <style>
-        /* Fondo general */
+        button[kind="header"] {{
+            font-size: 0 !important;
+        }}
+        button[kind="header"]::before {{
+            content: "≡";
+            font-size: 24px !important;
+            color: #333 !important;
+        }}
+        button[kind="header"] svg {{
+            display: none !important;
+        }}
         .stApp {{
             background-image: url("data:image/png;base64,{base64_img}");
             background-size: cover;
@@ -32,57 +48,71 @@ def set_background_and_style(image_path):
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
-        
-        /* Fuente global */
         * {{
             font-family: Arial, Helvetica, sans-serif !important;
         }}
-        
-        /* Sidebar con imagen de fondo */
         [data-testid="stSidebar"] {{
             background-image: url("data:image/png;base64,{base64_img}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }}
-        
-        /* Contenido del sidebar con transparencia */
         [data-testid="stSidebar"] > div:first-child {{
             background-color: rgba(255, 255, 255, 0.9);
             padding: 1rem;
             border-radius: 10px;
         }}
-        
-        /* Contenido principal con fondo semi-transparente */
         .main .block-container {{
             background-color: rgba(255, 255, 255, 0.85);
             padding: 2rem;
             border-radius: 10px;
         }}
-        
-        /* Títulos */
         h1, h2, h3 {{
             font-weight: 700 !important;
         }}
-        
-        /* Botones */
+        #MainMenu {{
+            visibility: hidden;
+        }}
+        footer {{
+            visibility: hidden;
+        }}
+        .stDeployButton {{
+            display: none;
+        }}
         .stButton>button {{
             font-weight: 500 !important;
         }}
         </style>
         """
     else:
-        # Sin imagen de fondo (solo fuente)
         page_bg = """
         <style>
+        button[kind="header"] {{
+            font-size: 0 !important;
+        }}
+        button[kind="header"]::before {{
+            content: "≡";
+            font-size: 24px !important;
+            color: #333 !important;
+        }}
+        button[kind="header"] svg {{
+            display: none !important;
+        }}
         * {{
             font-family: Arial, Helvetica, sans-serif !important;
         }}
-        
         h1, h2, h3 {{
             font-weight: 700 !important;
         }}
-        
+        #MainMenu {{
+            visibility: hidden;
+        }}
+        footer {{
+            visibility: hidden;
+        }}
+        .stDeployButton {{
+            display: none;
+        }}
         .stButton>button {{
             font-weight: 500 !important;
         }}
@@ -91,36 +121,29 @@ def set_background_and_style(image_path):
     
     st.markdown(page_bg, unsafe_allow_html=True)
 
-# Configuración de la página
 st.set_page_config(page_title="Dashboard de Residuos", layout="wide")
 
-# ⚠️ CAMBIA AQUÍ EL NOMBRE DE TU IMAGEN DE FONDO ⚠️
-# Ejemplos: "fondo.jpg", "background.png", "mi_fondo.jpeg"
 set_background_and_style("fondo.png")
 
-# Cargar datos
 @st.cache_data
 def load_data():
     return pd.read_csv("dataser.csv", sep=";")
 
 df = load_data()
 
-# Obtener columnas de residuos
 res_cols = [c for c in df.columns if "RESIDUO" in c.upper() or "ENVOLT" in c.upper()]
 
-# Menú lateral
+
 st.sidebar.title("MENÚ")
 opcion = st.sidebar.radio(
     "Navegación",
     ["INICIO", "GRÁFICAS", "NOSOTROS"]
 )
-
-# ==================== PÁGINA DE INICIO ====================
+    
 if opcion == "INICIO":
     st.title("🌍 SISTEMA DE ANÁLISIS DE RESIDUOS SÓLIDOS")
     st.markdown("---")
     
-    # Aquí puedes agregar tu imagen
     st.image("logo.png", use_container_width=True)
     st.markdown("""
     ### Bienvenido al Dashboard de Análisis de Residuos
@@ -137,19 +160,15 @@ if opcion == "INICIO":
     👈 **Usa el menú lateral para navegar**
     """)
 
-# ==================== PÁGINA DE GRÁFICAS ====================
 elif opcion == "GRÁFICAS":
     st.title("📊 ANÁLISIS DE GRÁFICAS")
     st.markdown("### Selecciona una gráfica para visualizar:")
     
-    # Crear 4 columnas para los botones
     col1, col2, col3, col4 = st.columns(4)
     
-    # Inicializar la variable en session_state si no existe
     if 'grafica_seleccionada' not in st.session_state:
         st.session_state.grafica_seleccionada = None
     
-    # Botones en cada columna
     with col1:
         if st.button("📊 Residuos por Departamento", use_container_width=True):
             st.session_state.grafica_seleccionada = "Gráfica 1"
@@ -170,7 +189,6 @@ elif opcion == "GRÁFICAS":
     
     tipo_grafica = st.session_state.grafica_seleccionada
     
-    # ==================== GRÁFICA 1 ====================
     if tipo_grafica == "Gráfica 1":
         st.header("📊 CANTIDAD TOTAL DE RESIDUOS POR DEPARTAMENTO")
         
@@ -184,7 +202,6 @@ elif opcion == "GRÁFICAS":
         
         ocultar_lima = st.checkbox("Ocultar departamento de Lima", key="g1_lima")
         
-        # Procesamiento de datos
         df_fil = df[df["PERIODO"] == año_sel]
         df_dep = df_fil.groupby("DEPARTAMENTO")[res_sel].sum().reset_index()
         df_dep = df_dep.sort_values("DEPARTAMENTO")
@@ -192,7 +209,6 @@ elif opcion == "GRÁFICAS":
         if ocultar_lima:
             df_dep = df_dep[df_dep["DEPARTAMENTO"].str.upper() != "LIMA"]
         
-        # Gráfica
         chart = (
             alt.Chart(df_dep)
             .mark_bar()
@@ -204,12 +220,22 @@ elif opcion == "GRÁFICAS":
         )
         st.altair_chart(chart, use_container_width=True)
         
-        # Espacio para comentarios
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
-        st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
+        st.write("""
+         Al analizar la cantidad un residuo en especifico de cada departamento pensamos que
+         la diferencia no seria tan abrumante, pues nos equivocamos, la cantidad de habitantes de Lima 
+         es tan grande que esto provoca que haya muchisimos mas residuos. Como podemos visualizar 
+         se muestra que siempre Lima es el que lidera todos los graficos posibles y por haber, eso si... 
+         notamos que los departamentos costeros son aquellos que también tienen valores muy altos a comparación 
+         de los de la sierra y selva peruana, muchos aumentan alarmantemente con respecto a sus años 
+         anteriores y eso nos genera una preocupación. Esta tabla tiene como finalidad el que el estado Peruano 
+         pueda los lugares que mas necesitan atención para controlar la cantidad de residuos. Como mencionamos antes 
+         el departamento de Lima tiene cifras muy superiores al resto, por ende, decidimos darle al usuario la opción
+         de mostrar o no este departamento con el fin de que la grafica muestre mejor la comparativa por 
+         departamento.
+            """)
     
-    # ==================== GRÁFICA 2 ====================
     elif tipo_grafica == "Gráfica 2":
         st.header("🥧 TOP 5 DISTRITOS CON MÁS RESIDUOS")
         
@@ -225,12 +251,10 @@ elif opcion == "GRÁFICAS":
         with col3:
             dep_sel = st.selectbox("Selecciona el departamento", departamentos, key="g2_dep")
         
-        # Procesamiento de datos
         df_fil = df[(df["PERIODO"] == anio_sel) & (df["DEPARTAMENTO"] == dep_sel)]
         df_top5 = df_fil.groupby("DISTRITO")[res_sel].sum().reset_index()
         df_top5 = df_top5.sort_values(res_sel, ascending=False).head(5)
         
-        # Gráfica
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.pie(
             df_top5[res_sel],
@@ -241,12 +265,10 @@ elif opcion == "GRÁFICAS":
         ax.axis("equal")
         st.pyplot(fig)
         
-        # Espacio para comentarios
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
         st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
     
-    # ==================== GRÁFICA 3 ====================
     elif tipo_grafica == "Gráfica 3":
         st.header("📈 EVOLUCIÓN DE RESIDUOS POR DISTRITO")
         
@@ -273,7 +295,6 @@ elif opcion == "GRÁFICAS":
         with col4:
             res_sel = st.selectbox("Selecciona el tipo de residuo", res_cols, key="g3_res")
         
-        # Procesamiento de datos
         df_fil = df[
             (df["DEPARTAMENTO"] == dep_sel) &
             (df["PROVINCIA"] == prov_sel) &
@@ -282,15 +303,12 @@ elif opcion == "GRÁFICAS":
         
         chart_data = df_fil.set_index("PERIODO")[[res_sel]]
         
-        # Gráfica
         st.line_chart(chart_data)
         
-        # Espacio para comentarios
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
         st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
     
-    # ==================== GRÁFICA 4 ====================
     elif tipo_grafica == "Gráfica 4":
         st.header("🏆 DISTRITOS MÁS LIMPIOS (MENOR RESIDUO PER CÁPITA)")
         
@@ -306,7 +324,6 @@ elif opcion == "GRÁFICAS":
         with col3:
             anio_sel = st.selectbox("Selecciona el año (PERIODO)", anios, key="g4_año")
         
-        # Procesamiento de datos
         df_fil = df[
             (df["DEPARTAMENTO"] == dep_sel) &
             (df["PERIODO"] == anio_sel)
@@ -315,7 +332,6 @@ elif opcion == "GRÁFICAS":
         df_fil["RESIDUO_PERCAPITA"] = df_fil[res_sel] / df_fil["POB_TOTAL"]
         df_top = df_fil[["DISTRITO", "RESIDUO_PERCAPITA"]].sort_values("RESIDUO_PERCAPITA").head(5)
         
-        # Gráfica
         chart = (
             alt.Chart(df_top)
             .mark_bar()
@@ -327,12 +343,10 @@ elif opcion == "GRÁFICAS":
         )
         st.altair_chart(chart, use_container_width=True)
         
-        # Espacio para comentarios
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
         st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
 
-# ==================== PÁGINA DE NOSOTROS ====================
 elif opcion == "NOSOTROS":
     st.title("👥 SOBRE NOSOTROS")
     st.markdown("---")
@@ -343,7 +357,7 @@ elif opcion == "NOSOTROS":
     Este proyecto fue desarrollado por:
     """)
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
@@ -379,6 +393,9 @@ elif opcion == "NOSOTROS":
     - Matplotlib
     """)
 
+st.sidebar.markdown("---")
+st.sidebar.info("VIVA EL PERU, VIVA EGINHARDO, VIVA EL FORNAIT, VIVA EL ROBLOX")
 # Footer
 st.sidebar.markdown("---")
 st.sidebar.info("VIVA EL PERU, VIVA EGINHARDO, VIVA EL FORNAIT")
+
