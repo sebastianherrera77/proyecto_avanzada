@@ -267,7 +267,12 @@ elif opcion == "GRÁFICAS":
         
         st.markdown("---")
         st.subheader("💬 Análisis y Comentarios")
-        st.write("Aquí puedes agregar tus comentarios sobre esta gráfica...")
+        st.write("""Esta gráfica muestra los distritos que más residuos producen según el residuo que 
+            queremos analizar, estos datos de distritos con mas residuos coinciden con los distritos con 
+            más población, ¿Más que obvio no? , si bien es cierto esto deberia ser lo esperado no significa 
+            que sea lo correcto, el territoria muchas veces es pequeño a comparación del resto de distritos,
+            esto hace que la calidad de vida de los habitantes pueda ser mala o perjudicial
+            """)
     
     elif tipo_grafica == "Gráfica 3":
         st.header("📈 EVOLUCIÓN DE RESIDUOS POR DISTRITO")
