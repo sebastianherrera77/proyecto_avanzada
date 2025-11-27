@@ -395,7 +395,3 @@ elif opcion == "NOSOTROS":
 
 st.sidebar.markdown("---")
 st.sidebar.info("VIVA EL PERU, VIVA EGINHARDO, VIVA EL FORNAIT, VIVA EL ROBLOX")
-# Footer
-st.sidebar.markdown("---")
-st.sidebar.info("VIVA EL PERU, VIVA EGINHARDO, VIVA EL FORNAIT")
-
